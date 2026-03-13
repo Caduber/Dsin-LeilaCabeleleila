@@ -1,0 +1,15 @@
+{
+  "name": "api-cabeleleila-leila",
+  "version": "1.0.0",
+  "description": "API REST para o sistema Cabeleleila Leila",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "postgres": "^3.4.8"
+  }
+}
