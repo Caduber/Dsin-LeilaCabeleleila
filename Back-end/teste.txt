@@ -1,0 +1,14 @@
+curl -X POST localhost:8080/agendamentos/insert \
+-H "Content-Type: application/json" \
+-d '{ "data": "2026-03-15",
+      "hora": "11:11:10",
+      "cli_id": 3
+    }'\
+
+--------------------------------------------------
+
+curl -X POST localhost:8080/clientes/insert \
+-H "Content-Type: application/json" \
+-d '{ "nome": "Marcia",
+      "telefone": "(14) 9876-1234"
+    }'
