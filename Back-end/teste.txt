@@ -1,3 +1,23 @@
+--------------------------------------------------
+AGENDAMENTOS
+--------------------------------------------------
+
+# getAllAgendamentos
+
+curl -X GET localhost:8080/agendamentos/ \
+-H "Content-Type: application/json" \
+
+--------------------------------------------------
+
+#getAgendamentos (especícifico) | .../agendamentos/<id cliente>
+
+curl -X GET localhost:8080/agendamentos/2 \
+-H "Content-Type: application/json" \
+
+--------------------------------------------------
+
+#inserir no banco
+
 curl -X POST localhost:8080/agendamentos/insert \
 -H "Content-Type: application/json" \
 -d '{ "data": "2026-03-15",
@@ -6,6 +26,34 @@ curl -X POST localhost:8080/agendamentos/insert \
     }'\
 
 --------------------------------------------------
+
+#atualizar a data/hora | .../update/<id agendamento>
+
+curl -X PATCH localhost:8080/agendamentos/update/4 \
+    -H "Content-Type: application/json" \
+    -d '{ 
+        "data": "2026-06-12",
+        "hora": "23:59:00"
+    }'
+
+-------------------------------------------------
+
+#vericar 2+ aterdimentos na mesma semana | .../verifSemana/<id agendamento>
+
+curl -X GET localhost:8080/agendamentos/verifSemana/2 \
+-H "Content-Type: application/json"
+
+-------------------------------------------------
+
+#manter 2 datas (datas multiplas) na mesma semana | .../manter/<id cliente>
+
+curl -X GET localhost:8080/agendamentos/manter/5
+
+-------------------------------------------------
+CLIENTES
+-------------------------------------------------
+
+# inserir no banco
 
 curl -X POST localhost:8080/clientes/insert \
 -H "Content-Type: application/json" \

@@ -1,4 +1,5 @@
 const express = require('express');
+const datefns = require('date-fns');
 
 const sql = require('../db/dbClient');
 
@@ -14,7 +15,7 @@ const getAllAgendamentos = async (req,res) => {
 
 const getAgendamentos = async (req,res) => {
     try {
-        const response = await sql`SELECT * FROM agendamentos WHERE cli_id = ${req.params.id}`;
+        const response = await sql`SELECT * FROM agendamentos WHERE cli_id = ${req.params.cli_id}`;
         res.json(response);
     } catch (error) {
         console.error('Erro na query:', error);
@@ -23,6 +24,7 @@ const getAgendamentos = async (req,res) => {
 }
 
 const insert = async (req, res)=> {
+    
     try {
         const response = await sql`INSERT INTO agendamentos (age_data, age_hora, cli_id) VALUES (${req.body.data}, ${req.body.hora}, ${req.body.cli_id})`;
 
@@ -35,18 +37,78 @@ const insert = async (req, res)=> {
 const patch =  async (req, res) => {
     
     try {
-        const response = await sql`UPDATE agendamentos SET age_data = ${req.body.data}, age_hora = ${req.body.hora} WHERE age_id = ${req.params.id}`;
-        res.json({ message: 'Agendamento atualizado com sucesso!' });
+        // Regra de negócio: 2 dias antecedência
+        const novaData = new Date(req.body.data);
+        const hoje = new Date();
+
+        // a biblioteca date-fns nesse caso compara a diferença
+        // de dias entre duas datas
+        const dif = datefns.differenceInDays(novaData, hoje);
+
+        if (dif >= 2) {
+            const response = await sql`UPDATE agendamentos SET age_data = ${req.body.data}, age_hora = ${req.body.hora} WHERE age_id = ${req.params.age_id}`;
+            res.json({ message: 'Agendamento atualizado com sucesso!' });
+        } else {
+            res.json({ message: "A data selecionada está muito próxima, entre em contato por ligação"})
+        }
+
+        
     } catch (error) {
         console.error('Erro na query:', error);
         res.status(500).json({ message: 'Erro ao atualizar agendamento no banco de dados.' });
     }
 }
 
+const verifSemana = async(req, res) => {
+
+    try{
+        // Regra de negócio: Multiplos agendamentos na semana
+        const agendamentos = await sql`SELECT age_data, age_manter FROM agendamentos WHERE cli_id = ${req.params.cli_id}`;
+        let dataAux = new Date(0, 0, 0);
+        dataAux = dataAux.setHours(0, 0, 0, 0);
+
+        agendamentos.forEach(agendamento => {
+            const data = new Date(agendamento.age_data);
+            const dif = datefns.differenceInDays(data, dataAux);
+
+            if (agendamento.age_manter != true) {
+                if ((dif <= 7 && dif >= -7) && dif != 0 ) {
+                    return res.send({ 
+                        multiplas: true,
+                        message: 'Já existe um agendamento na semana, deseja agendar os dois no mesmo dia?',
+                        data_sugerida: dataAux,
+                        data_multipla: data
+                    });
+                }
+                else {
+                    dataAux = data;
+                }
+            }        
+        });
+        return res.send({ multiplas: false });
+    }catch(error) {
+        console.error('Erro ao verificar consultas multiplas:', error);
+        res.status(500).json({ message: 'Erro ao verificar consultas multiplas.' });
+    }    
+}
+
+const manterDataMultipla = async (req, res) => {
+    try{
+        const response = await sql`UPDATE agendamentos SET age_manter = TRUE WHERE age_id = ${req.params.age_id}`;
+        return res.send({ message: 'O agendamento tera a data mantida!' });
+    }catch(error) {
+        console.error('Erro ao manter da multipla:', error);
+        res.status(500).json({ message: 'Erro ao manter da multipla.' });
+    }
+    
+}
+
 module.exports = {
     getAllAgendamentos,
     getAgendamentos,
     insert,
-    patch
+    patch,
+    verifSemana,
+    manterDataMultipla
 }
 
