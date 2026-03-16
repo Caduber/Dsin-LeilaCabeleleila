@@ -34,28 +34,29 @@ const insert = async (req, res)=> {
     }
 }
 
-const patch =  async (req, res) => {
-    
-    try {
-        // Regra de negócio: 2 dias antecedência
-        const novaData = new Date(req.body.data);
-        const hoje = new Date();
+const patch = async (req, res) => {
+    try{
+        const [agendamento] = await sql`SELECT age_data FROM agendamentos WHERE age_id = ${req.params.age_id}`;
 
-        // a biblioteca date-fns nesse caso compara a diferença
-        // de dias entre duas datas
-        const dif = datefns.differenceInDays(novaData, hoje);
+            if (!agendamento) {
+                return res.status(404).json({ message: 'Agendamento não encontrado.' });
+            }
 
-        if (dif >= 2) {
-            const response = await sql`UPDATE agendamentos SET age_data = ${req.body.data}, age_hora = ${req.body.hora} WHERE age_id = ${req.params.age_id}`;
-            res.json({ message: 'Agendamento atualizado com sucesso!' });
-        } else {
-            res.json({ message: "A data selecionada está muito próxima, entre em contato por ligação"})
-        }
+            const dataAtual = new Date(agendamento.age_data);
+            const novaData = new Date(req.body.data);
 
-        
-    } catch (error) {
-        console.error('Erro na query:', error);
-        res.status(500).json({ message: 'Erro ao atualizar agendamento no banco de dados.' });
+            const dif = datefns.differenceInDays(novaData, dataAtual);
+
+            if (dif >= 2) {
+                await sql`UPDATE agendamentos SET age_data = ${req.body.data}, age_hora = ${req.body.hora} WHERE age_id = ${req.params.age_id}`;
+                res.json({ message: 'Agendamento atualizado com sucesso!' });
+            } else {
+                res.status(200).json({ message: "A data selecionada está muito próxima, entre em contato por ligação" });
+            }
+
+        } catch (error) {
+            console.error('Erro na query:', error);
+            res.status(500).json({ message: 'Erro ao atualizar agendamento no banco de dados.' });
     }
 }
 

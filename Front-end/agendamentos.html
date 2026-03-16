@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamentos | Cabeleleila Leila</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo">Cabeleleila Leila</a>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="agendar.html">Agendar</a></li>
+        <li><a href="agendamentos.html" class="ativo">Agendamentos</a></li>
+        <li><a href="clientes.html">Clientes</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section>
+    <div class="container">
+      <h2>Agendamentos</h2>
+      <p class="subtitulo">Lista de todos os agendamentos. Alterações com menos de 2 dias de antecedência devem ser feitas por telefone.</p>
+
+      <div id="alerta" class="alerta" style="display: none;"></div>
+      <div id="avisoSemana" style="display: none;"></div>
+
+      <div class="form-grupo mb-2">
+        <label>Filtrar por cliente</label>
+        <select id="filtroCliente">
+          <option value="">Todos</option>
+        </select>
+      </div>
+
+      <div class="tabela-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Horário</th>
+              <th>Cliente</th>
+              <th>CPF</th>
+              <th>Telefone</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="corpoAgendamentos">
+            <tr><td colspan="6" class="msg-vazia">Carregando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="modalEditar" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center;">
+        <div class="form-pagina" style="margin: 1rem;">
+          <h3>Alterar data/hora</h3>
+          <p class="mt-1">Somente com pelo menos 2 dias de antecedência.</p>
+          <div class="form-grupo">
+            <label>Data</label>
+            <input type="date" id="editData">
+          </div>
+          <div class="form-grupo">
+            <label>Horário</label>
+            <input type="time" id="editHora">
+          </div>
+          <div class="botoes-form">
+            <button type="button" class="btn btn-primario" id="btnSalvarEdicao">Salvar</button>
+            <button type="button" class="btn btn-secundario" id="btnFecharModal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p><strong>Cabeleleila Leila</strong> — Alterações com menos de 2 dias: contato por telefone.</p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/agendamentos.js"></script>
+</body>
+</html>

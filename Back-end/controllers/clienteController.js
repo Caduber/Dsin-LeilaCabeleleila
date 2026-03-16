@@ -14,7 +14,7 @@ const getAllClientes = async (req, res) => {
 
 const getClientes = async (req, res) => {
     try {
-        const response = await sql`SELECT * FROM clientes WHERE cli_id = ${req.params.id}`
+        const response = await sql`SELECT * FROM clientes WHERE cli_cpf = ${req.params.cpf}`
         res.json(response);
     } catch (error) {
         console.error('Erro na query:', error);
@@ -24,7 +24,7 @@ const getClientes = async (req, res) => {
 
 const insert = async (req, res) => {
     try {
-        const response = await sql`INSERT INTO clientes (cli_nome,  cli_telefone) VALUES (${req.body.nome}, ${req.body.telefone})`;
+        const response = await sql`INSERT INTO clientes (cli_nome, clif_cpf,  cli_telefone) VALUES (${req.body.nome}, ${req.body.cpf} ${req.body.telefone})`;
         res.json({ message: 'Cliente inserido com sucesso!' });
     }catch (error) {
         console.error('Erro na query:', error);

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', controller.getAllClientes);
 
-router.get('/:id', controller.getClientes);
+router.get('/:cpf', controller.getClientes);
 
 router.post('/insert', controller.insert);
 

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendar | Cabeleleila Leila</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo">Cabeleleila Leila</a>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="agendar.html" class="ativo">Agendar</a></li>
+        <li><a href="agendamentos.html">Agendamentos</a></li>
+        <li><a href="clientes.html">Clientes</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section>
+    <div class="container">
+      <h2>Novo agendamento</h2>
+      <p class="subtitulo">Primeiro identifique o cliente; depois escolha data e horário.</p>
+
+      <div id="alerta" class="alerta" style="display: none;"></div>
+      <div id="avisoSemana" class="alerta alerta-aviso" style="display: none;"></div>
+
+      <div class="form-pagina">
+        <h3 class="mb-2" id="tituloEtapa">1. Cliente</h3>
+
+        <div id="etapa-cliente">
+          <div class="form-grupo">
+            <label>Já é cliente?</label>
+            <select id="tipoCliente">
+              <option value="buscar">Buscar por CPF</option>
+              <option value="novo">Cadastrar novo cliente</option>
+            </select>
+          </div>
+          <div id="campoBusca">
+            <div class="form-grupo">
+              <label for="cpfBusca">CPF</label>
+              <input type="text" id="cpfBusca" placeholder="Ex: 12345678900">
+            </div>
+            <button type="button" class="btn btn-secundario" id="btnBuscarCliente">Buscar</button>
+          </div>
+          <div id="campoNovoCliente" style="display: none;">
+            <div class="form-grupo">
+              <label for="nomeNovo">Nome</label>
+              <input type="text" id="nomeNovo" placeholder="Nome completo">
+            </div>
+            <div class="form-grupo">
+              <label for="cpfNovo">CPF</label>
+              <input type="text" id="cpfNovo" placeholder="Ex: 12345678900">
+            </div>
+            <div class="form-grupo">
+              <label for="telefoneNovo">Telefone</label>
+              <input type="text" id="telefoneNovo" placeholder="Ex: 11999998888">
+            </div>
+            <button type="button" class="btn btn-secundario" id="btnCadastrarCliente">Cadastrar e continuar</button>
+          </div>
+          <div id="clienteSelecionado" class="mt-2" style="display: none;">
+            <p><strong>Cliente:</strong> <span id="nomeClienteSel"></span> — <span id="cpfClienteSel"></span> — <span id="telClienteSel"></span></p>
+            <button type="button" class="btn btn-secundario mt-1" id="btnTrocarCliente">Trocar cliente</button>
+          </div>
+        </div>
+
+        <div id="etapa-data-hora" style="display: none;">
+          <div class="form-grupo">
+            <label for="dataAgenda">Data</label>
+            <input type="date" id="dataAgenda" required>
+          </div>
+          <div class="form-grupo">
+            <label for="horaAgenda">Horário</label>
+            <input type="time" id="horaAgenda" required>
+          </div>
+          <div class="botoes-form">
+            <button type="button" class="btn btn-primario" id="btnConfirmarAgendamento">Confirmar agendamento</button>
+            <button type="button" class="btn btn-secundario" id="btnVoltarCliente">Voltar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p><strong>Cabeleleila Leila</strong> — Alterações com menos de 2 dias de antecedência: entre em contato por telefone.</p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/agendar.js"></script>
+</body>
+</html>
