@@ -97,6 +97,9 @@ function mesmaSemana(dataStr1, dataStr2) {
   const d1 = new Date(String(dataStr1).split('T')[0] + 'T12:00:00');
   const d2 = new Date(String(dataStr2).split('T')[0] + 'T12:00:00');
   if (Number.isNaN(d1.getTime()) || Number.isNaN(d2.getTime())) return false;
+  if (d1.toDateString() === d2.toDateString()){
+    return false;
+  }
   const seg = 86400000;
   const segSemana = 7 * seg;
   const ini1 = d1.getTime() - (d1.getDay() * seg);
