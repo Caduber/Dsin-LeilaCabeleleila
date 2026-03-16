@@ -91,6 +91,7 @@ document.getElementById('btnCadastrar').addEventListener('click', async () => {
     document.getElementById('cpf').value = '';
     document.getElementById('telefone').value = '';
     carregar();
+    window.alert("Cadastro Enviado");
   } catch (e) {
     mostrarAlerta('Cadastro não realizado. Motivo: ' + (e.data?.message || e.message || 'erro ao cadastrar'), 'erro');
   }

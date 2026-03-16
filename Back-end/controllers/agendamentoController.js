@@ -27,6 +27,7 @@ const insert = async (req, res)=> {
     
     try {
         const response = await sql`INSERT INTO agendamentos (age_data, age_hora, cli_id) VALUES (${req.body.data}, ${req.body.hora}, ${req.body.cli_id})`;
+        res.json(response);
 
     } catch(error) {
         console.error('Erro na query:', error);
@@ -47,7 +48,7 @@ const patch = async (req, res) => {
 
             const dif = datefns.differenceInDays(novaData, dataAtual);
 
-            if (dif >= 2) {
+            if (dif < -2 || dif >= 0) {
                 await sql`UPDATE agendamentos SET age_data = ${req.body.data}, age_hora = ${req.body.hora} WHERE age_id = ${req.params.age_id}`;
                 res.json({ message: 'Agendamento atualizado com sucesso!' });
             } else {
@@ -64,7 +65,7 @@ const verifSemana = async(req, res) => {
 
     try{
         // Regra de negócio: Multiplos agendamentos na semana
-        const agendamentos = await sql`SELECT age_data, age_manter FROM agendamentos WHERE cli_id = ${req.params.cli_id}`;
+        const agendamentos = await sql`SELECT age_data FROM agendamentos WHERE cli_id = ${req.params.cli_id}`;
         let dataAux = new Date(0, 0, 0);
         dataAux = dataAux.setHours(0, 0, 0, 0);
 
@@ -72,18 +73,16 @@ const verifSemana = async(req, res) => {
             const data = new Date(agendamento.age_data);
             const dif = datefns.differenceInDays(data, dataAux);
 
-            if (agendamento.age_manter != true) {
-                if ((dif <= 7 && dif >= -7) && dif != 0 ) {
-                    return res.send({ 
-                        multiplas: true,
-                        message: 'Já existe um agendamento na semana, deseja agendar os dois no mesmo dia?',
-                        data_sugerida: dataAux,
-                        data_multipla: data
-                    });
-                }
-                else {
-                    dataAux = data;
-                }
+            if ((dif <= 7 && dif >= -7) && dif != 0 ) {
+                return res.send({ 
+                    multiplas: true,
+                    message: 'Já existe um agendamento na semana, deseja agendar os dois no mesmo dia?',
+                    data_sugerida: dataAux,
+                    data_multipla: data
+                });
+            }
+            else {
+                dataAux = data;
             }        
         });
         return res.send({ multiplas: false });
@@ -93,23 +92,11 @@ const verifSemana = async(req, res) => {
     }    
 }
 
-const manterDataMultipla = async (req, res) => {
-    try{
-        const response = await sql`UPDATE agendamentos SET age_manter = TRUE WHERE age_id = ${req.params.age_id}`;
-        return res.send({ message: 'O agendamento tera a data mantida!' });
-    }catch(error) {
-        console.error('Erro ao manter da multipla:', error);
-        res.status(500).json({ message: 'Erro ao manter da multipla.' });
-    }
-    
-}
-
 module.exports = {
     getAllAgendamentos,
     getAgendamentos,
     insert,
     patch,
-    verifSemana,
-    manterDataMultipla
+    verifSemana
 }
 

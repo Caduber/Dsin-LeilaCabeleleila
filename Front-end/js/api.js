@@ -18,7 +18,12 @@ async function request(path, options = {}) {
   }
   const res = await fetch(url, config);
   const text = await res.text();
-  const data = text ? JSON.parse(text) : null;
+  let data;
+  if (text) {
+    data = JSON.parse(text);
+  } else {
+    data = null;
+  }
   if (!res.ok) {
     const err = new Error(data?.message || `Erro ${res.status}`);
     err.status = res.status;
@@ -52,6 +57,5 @@ const api = {
       body: { data, hora },
     }),
     verificarSemana: (cliId) => request(`/agendamentos/verifSemana/${cliId}`),
-    manterData: (ageId) => request(`/agendamentos/manter/${ageId}`),
   },
 };

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agendar | Cabeleleila Leila</title>
+  <link rel="icon" href="public/favicon.ico">
   <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
@@ -83,6 +84,16 @@
       </div>
     </div>
   </section>
+
+  <div id="modalPopup" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 250; align-items: center; justify-content: center;">
+    <div class="form-pagina" style="margin: 1rem; max-width: 520px; width: calc(100% - 2rem);">
+      <h3 id="popupTitulo">Aviso</h3>
+      <p class="mt-1" id="popupMensagem"></p>
+      <div class="botoes-form">
+        <button type="button" class="btn btn-primario" id="btnPopupOk">OK</button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <div class="container">

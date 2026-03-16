@@ -13,6 +13,4 @@ router.patch('/update/:age_id', controller.patch);
 
 router.get('/verifSemana/:cli_id', controller.verifSemana);
 
-router.get('/manter/:age_id', controller.manterDataMultipla);
-
 module.exports = router;

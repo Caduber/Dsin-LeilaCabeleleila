@@ -5,6 +5,10 @@ const campoNovoCliente = document.getElementById('campoNovoCliente');
 const clienteSelecionado = document.getElementById('clienteSelecionado');
 const etapaDataHora = document.getElementById('etapa-data-hora');
 const tituloEtapa = document.getElementById('tituloEtapa');
+const modalPopup = document.getElementById('modalPopup');
+const popupTitulo = document.getElementById('popupTitulo');
+const popupMensagem = document.getElementById('popupMensagem');
+const btnPopupOk = document.getElementById('btnPopupOk');
 
 let clienteAtual = null;
 
@@ -17,10 +21,36 @@ function esconderAlerta() {
   alerta.style.display = 'none';
 }
 
+function abrirPopup(titulo, mensagem) {
+  if (popupTitulo) popupTitulo.textContent = titulo || 'Aviso';
+  if (popupMensagem) popupMensagem.textContent = mensagem || '';
+  if (modalPopup) modalPopup.style.display = 'flex';
+}
+function fecharPopup() {
+  if (modalPopup) modalPopup.style.display = 'none';
+}
+
+if (btnPopupOk) {
+  btnPopupOk.addEventListener('click', fecharPopup);
+}
+if (modalPopup) {
+  modalPopup.addEventListener('click', (e) => {
+    if (e.target === modalPopup) fecharPopup();
+  });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') fecharPopup();
+});
+
 tipoCliente.addEventListener('change', () => {
   const isNovo = tipoCliente.value === 'novo';
-  campoBusca.style.display = isNovo ? 'none' : 'block';
-  campoNovoCliente.style.display = isNovo ? 'block' : 'none';
+  if (isNovo) {
+    campoBusca.style.display = 'none';
+    campoNovoCliente.style.display = 'block';
+  } else {
+    campoBusca.style.display = 'block';
+    campoNovoCliente.style.display = 'none';
+  }
   clienteSelecionado.style.display = 'none';
   clienteAtual = null;
   esconderAlerta();
@@ -93,8 +123,13 @@ document.getElementById('btnTrocarCliente').addEventListener('click', () => {
   clienteSelecionado.style.display = 'none';
   document.getElementById('avisoSemana').style.display = 'none';
   document.getElementById('avisoSemana').innerHTML = '';
-  campoBusca.style.display = tipoCliente.value === 'novo' ? 'none' : 'block';
-  campoNovoCliente.style.display = tipoCliente.value === 'novo' ? 'block' : 'none';
+  if (tipoCliente.value === 'novo') {
+    campoBusca.style.display = 'none';
+    campoNovoCliente.style.display = 'block';
+  } else {
+    campoBusca.style.display = 'block';
+    campoNovoCliente.style.display = 'none';
+  }
   etapaDataHora.style.display = 'none';
   tituloEtapa.textContent = '1. Cliente';
   esconderAlerta();
@@ -145,7 +180,7 @@ document.getElementById('btnConfirmarAgendamento').addEventListener('click', asy
       if (!confirm(verif.message + '\n\nDeseja mesmo criar este agendamento?')) return;
     }
     await api.agendamentos.criar(data, hora, clienteAtual.cli_id);
-    mostrarAlerta('Agendamento realizado com sucesso!', 'sucesso');
+    abrirPopup('Agendamento confirmado', 'Agendamento realizado com sucesso!');
     document.getElementById('dataAgenda').value = '';
     document.getElementById('horaAgenda').value = '';
     verificarAvisoSemana(clienteAtual.cli_id);

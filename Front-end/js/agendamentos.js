@@ -25,20 +25,34 @@ function formatarData(str) {
 }
 function nomeCliente(cliId) {
   const c = clientes.find(x => x.cli_id === cliId);
-  return c ? c.cli_nome : '—';
+  if (c) {
+    return c.cli_nome;
+  }
+  return '—';
 }
 function cpfCliente(cliId) {
   const c = clientes.find(x => x.cli_id === cliId);
-  return c ? (c.cli_cpf || '—') : '—';
+  if (c) {
+    return c.cli_cpf || '—';
+  }
+  return '—';
 }
 function telefoneCliente(cliId) {
   const c = clientes.find(x => x.cli_id === cliId);
-  return c ? c.cli_telefone : '—';
+  if (c) {
+    return c.cli_telefone;
+  }
+  return '—';
 }
 
 function filtrar() {
   const cliId = filtroCliente.value;
-  const lista = cliId ? agendamentos.filter(a => String(a.cli_id) === cliId) : agendamentos;
+  let lista;
+  if (cliId) {
+    lista = agendamentos.filter(a => String(a.cli_id) === cliId);
+  } else {
+    lista = agendamentos;
+  }
   lista.sort((a, b) => {
     const da = (a.age_data || '') + (a.age_hora || '');
     const db = (b.age_data || '') + (b.age_hora || '');
@@ -68,7 +82,11 @@ function render(lista) {
       ageIdEditando = btn.dataset.ageId;
       const dataBruta = btn.dataset.data || '';
       const dataOnly = String(dataBruta).split('T')[0].split(' ')[0];
-      document.getElementById('editData').value = /^\d{4}-\d{2}-\d{2}$/.test(dataOnly) ? dataOnly : '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dataOnly)) {
+        document.getElementById('editData').value = dataOnly;
+      } else {
+        document.getElementById('editData').value = '';
+      }
       document.getElementById('editHora').value = btn.dataset.hora || '';
       modalEditar.style.display = 'flex';
     });
@@ -119,7 +137,7 @@ function exibirAvisoMultiplos() {
   }
   box.innerHTML = multi.map(m => `
     <div class="alerta alerta-aviso aviso-reagendar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-      <span><strong>${m.nome}</strong> possui mais de um agendamento nesta semana. Deseja reagendar?</span>
+      <span>Um cliente possui mais de um agendamento nesta semana. Deseja reagendar?</span>
       <button type="button" class="btn btn-secundario btn-reagendar" data-cli-id="${m.cliId}" style="padding: 0.4rem 0.8rem;">Ver agendamentos</button>
     </div>
   `).join('');
@@ -166,9 +184,19 @@ document.getElementById('btnSalvarEdicao').addEventListener('click', async () =>
   esconderAlerta();
   try {
     const result = await api.agendamentos.atualizar(ageIdEditando, data, hora);
-    const msg = result && result.message ? result.message : 'Agendamento atualizado com sucesso.';
+    let msg;
+    if (result && result.message) {
+      msg = result.message;
+    } else {
+      msg = 'Agendamento atualizado com sucesso.';
+    }
     const foiBloqueado = msg.includes('próxima') || msg.includes('ligação') || msg.includes('telefone');
-    const tipo = foiBloqueado ? 'aviso' : 'sucesso';
+    let tipo;
+    if (foiBloqueado) {
+      tipo = 'aviso';
+    } else {
+      tipo = 'sucesso';
+    }
 
     modalEditar.style.display = 'none';
     ageIdEditando = null;
@@ -180,7 +208,14 @@ document.getElementById('btnSalvarEdicao').addEventListener('click', async () =>
       carregar();
     }
   } catch (e) {
-    const msgErro = e.data && e.data.message ? e.data.message : (e.message || 'Erro ao atualizar.');
+    let msgErro;
+    if (e.data && e.data.message) {
+      msgErro = e.data.message;
+    } else if (e.message) {
+      msgErro = e.message;
+    } else {
+      msgErro = 'Erro ao atualizar.';
+    }
     mostrarAlerta(msgErro, 'erro');
     alerta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
