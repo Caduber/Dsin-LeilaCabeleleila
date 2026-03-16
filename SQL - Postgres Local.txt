@@ -1,0 +1,18 @@
+-- Mesmo com a Supabase, caso queiram rodar o banco localmente, aqui está o SQL
+-- Neste caso, pode ser necessário alterar a string de conexão do arquivo .env
+
+-- Tabela de clientes
+CREATE TABLE clientes (
+  cli_id    BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  cli_nome  TEXT,
+  cli_telefone TEXT,
+  cli_cpf   TEXT UNIQUE
+);
+
+-- Tabela de agendamentos
+CREATE TABLE agendamentos (
+  age_id   BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  age_hora TIME,
+  age_data DATE,
+  cli_id   BIGINT REFERENCES clientes(cli_id)
+);
